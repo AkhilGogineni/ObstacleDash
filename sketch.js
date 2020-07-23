@@ -3,11 +3,22 @@ var ground;
 var celing;
 var spike, spike2, spike3;
 var spike1;
+var play = 1;
+var end = 0;
+var gamestate = play;
+var gameOver;
+var restart;
+var obstaclesGroup;
+var obstaclesGroup2;
+var score = 0;
+
 
 
 function preload(){
   spike = loadImage("obstacleImages/Spike.png");
   flyingbat = loadImage("obstacleImages/flyingbat.png")
+  gameoverimage = loadImage("obstacleImages/GameOver.png");
+  reset = loadImage("obstacleImages/play.png");
 }
 
 function setup() {
@@ -20,31 +31,77 @@ function setup() {
   celing = createSprite(600,200,1200,200);
   celing.shapeColor = "black";
   ground.shapeColor = "black";
-
-
+  gameOver = createSprite(300,50,30,20);
+  gameOver.addImage("gameovertext",gameoverimage);
+  restart = createSprite(300,100,30,30);
+  restart.addImage("restart button",reset);
 }
+
+
+
 
 function draw() {
   background(255,255,255);  
   player.collide(ground);
   drawSprites();
 
-  if(keyWentDown("space") && player.y > 470){
-    player.velocityY = -13
-  }
 
-  //  console.log(player.y)
-  player.velocityY = player.velocityY + 0.7;
+  // playstate
+  if (gamestate === play)  {
   
+ 
+    gameOver.visible = false;
+    restart.visible = false;
+    // player jump
+    if(keyDown("space") && player.y > 470 ) {
+      player.velocityY = -13;
+    }
+    
+    //console.log(player.y);
+    player.velocityY = player.velocityY + 0.7
+    
+    
+    
+    
+  
+    
+    score = score + Math.round(getFrameRate()/60);
+    
+    
+    if(frameCount<3000){
+      spawnObstacles();
+      }
+      if(frameCount>3000){
+        spawnObstacles2();
+      }
+      
+    if(player.isTouching(obstaclesGroup)|| player.isTouchubg(obstaclesGroup2)) {
+      gamestate = end;
+    }
+    
+    }
+    
+    
+    // what to do in end state
+    else if(gamestate === end) {
+      gameOver.visible = true;
+      restart.visible = true;
+      obstaclesGroup.setVelocityXEach(0);
+      obstaclesGroup.setLifetimeEach(-1);
+      ground.velocityX = 0;
+    }
+    
+    // if restart sprite is pressed back to play state
+    if(mousePressedOver(restart)) {
+      gamestate = play;
+      obstaclesGroup.destroyEach();
+      score = 0;
+    }
+    
   console.log(frameCount);
   drawSprites();
 
-  if(frameCount<3000){
-  spawnObstacles();
-  }
-  if(frameCount>3000){
-    spawnObstacles2();
-  }
+  
 }
 
 function spawnObstacles() {
@@ -79,7 +136,7 @@ switch (rand){
           obstacle1.scale = 0.3;
   }
     obstacle.lifetime = 240;
-
+    obstaclesGroup.add(obstacle);
   }
 }
 
@@ -132,6 +189,6 @@ switch (rand){
 
   }
     obstacle.lifetime = 240;
-
+    obstaclesGroup2.add(obstacle);
   }
 }
