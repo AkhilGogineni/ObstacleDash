@@ -19,6 +19,8 @@ function preload(){
   flyingbat = loadImage("obstacleImages/flyingbat.png")
   gameoverimage = loadImage("obstacleImages/GameOver.png");
   reset = loadImage("obstacleImages/play.png");
+  player7 = loadImage("obstacleImages/player7.png");
+
 }
 
 function setup() {
@@ -26,15 +28,20 @@ function setup() {
   createSprite(400, 200, 50, 50);
   player = createSprite(100,250,50,50);
   player.shapeColor = "orange"
+  //player.addImage(player7);
+  //player.scale = 0.2;
   ground = createSprite(600,600,1200,200);
   ground.color = "black";
   celing = createSprite(600,200,1200,200);
   celing.shapeColor = "black";
   ground.shapeColor = "black";
-  gameOver = createSprite(300,50,30,20);
+  gameOver = createSprite(600,400,30,20);
   gameOver.addImage("gameovertext",gameoverimage);
-  restart = createSprite(300,100,30,30);
+  gameOver.scale = 0.5;
+  restart = createSprite(600,600,30,30);
   restart.addImage("restart button",reset);
+  obstaclesGroup = new Group();
+  obstaclesGroup2 = new Group();
 }
 
 
@@ -43,7 +50,6 @@ function setup() {
 function draw() {
   background(255,255,255);  
   player.collide(ground);
-  drawSprites();
 
 
   // playstate
@@ -75,7 +81,7 @@ function draw() {
         spawnObstacles2();
       }
       
-    if(player.isTouching(obstaclesGroup)|| player.isTouchubg(obstaclesGroup2)) {
+    if(player.isTouching(obstaclesGroup)|| player.isTouching(obstaclesGroup2)) {
       gamestate = end;
     }
     
@@ -98,7 +104,8 @@ function draw() {
       score = 0;
     }
     
-  console.log(frameCount);
+  //console.log(frameCount);
+  player.debug = true
   drawSprites();
 
   
@@ -116,27 +123,34 @@ switch (rand){
   case 1: obstacle.addImage(spike);
           obstacle1.visible = false;
           obstacle.scale = 0.8;
+          obstacle.setCollider("rectangle",0,0,50,100);
           break;
   case 2: obstacle.addImage(flyingbat);
           obstacle1.visible = false;
-          obstacle.y = 380;
+          obstacle.y = 360;
           obstacle.scale = 0.3;
           break;
   case 3: obstacle.addImage(spike);
           obstacle1.addImage(spike);
           obstacle.scale = 0.8;
           obstacle1.scale = 0.8;
+          obstacle1.setCollider("rectangle",0,0,50,100);
+          obstacle.setCollider("rectangle",0,0,50,100);
           break;
   case 4: obstacle.addImage(flyingbat);
           obstacle1.addImage(flyingbat);
-          obstacle.y = 380;
-          obstacle1.y = 380;
+          obstacle.y = 360;
+          obstacle1.y = 360;
           obstacle1.x = 1200;
           obstacle.scale = 0.3;
           obstacle1.scale = 0.3;
   }
     obstacle.lifetime = 240;
     obstaclesGroup.add(obstacle);
+    obstaclesGroup.add(obstacle1);
+    obstacle.debug = true;
+    obstacle1.debug = true;
+    
   }
 }
 
@@ -149,6 +163,7 @@ function spawnObstacles2() {
     obstacle1.velocityX = -6;
     obstacle2.velocityX = -6;
     var rand = Math.round(random(1,4));
+    
 switch (rand){
 
 
@@ -157,10 +172,12 @@ switch (rand){
           obstacle2.visible = false;
           obstacle.scale = 0.8;
           obstacle1.scale = 0.8;
+          obstacle.setCollider("rectangle",0,0,50,100);
+          obstacle1.setCollider("rectangle",0,0,50,100);
           break;
   case 2: obstacle.addImage(flyingbat);
           obstacle1.addImage(flyingbat);
-          obtsacle2.visible = false;
+          obstacle2.visible = false;
           obstacle.y = 380;
           obstacle1.y = 380;
           obstacle1.x = 1200;
@@ -185,10 +202,20 @@ switch (rand){
           obstacle.scale = 0.8;
           obstacle1.scale = 0.8;
           obstacle2.scale = 0.8;
+          obstacle.setCollider("rectangle",0,0,50,100);
+          obstacle1.setCollider("rectangle",0,0,50,100);
+          obstacle2.setCollider("rectangle",0,0,50,100);
           break;
 
   }
     obstacle.lifetime = 240;
     obstaclesGroup2.add(obstacle);
+    obstaclesGroup2.add(obstacle1);
+    obstaclesGroup2.add(obstacle2);
+    obstaclesGroup2.debug = true;
+    obstacle.debug = true;
+    obstacle1.debug = true;
+    obstacle2.debug = true;
+ 
   }
 }
